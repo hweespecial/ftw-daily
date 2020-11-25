@@ -40,10 +40,10 @@ exports.createIdToken = user => {
   const { userId, profile } = user;
 
   const jwt = new SignJWT({
-    firstName: profile.firstName,
-    lastName: profile.lastName,
+    given_name: profile.firstName,
+    family_name: profile.lastName,
     email: profile.email,
-    emailVerified: profile.emailVerified,
+    email_verified: profile.emailVerified,
   })
     .setProtectedHeader({ alg: 'RS256' })
     .setIssuedAt()

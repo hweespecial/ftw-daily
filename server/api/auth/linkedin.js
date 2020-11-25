@@ -39,12 +39,19 @@ const verifyCallback = (req, accessToken, refreshToken, rawReturn, profile, done
   const lastName = profile._json.lastName.localized[locale];
   const email = profile.emails[0].value;
 
+
+// LikedIn API doesn't return information if the email is verified or not directly.
+// However, it seems that with OAUTH2 flow authentication is not possible if the email is not verified.
+// There is no official documentation about this, but through testing it seems like this can be trusted
+// For reference: https://stackoverflow.com/questions/19278201/oauth-request-verified-email-address-from-linkedin
+
   const user = {
     userId: profile.id,
     profile: {
       firstName,
       lastName,
       email,
+      emailVerified: true,
     },
   };
 
@@ -99,6 +106,6 @@ exports.authenticateLinkedin = (req, res, next) => {
 // to log in the user to Flex with the data from Linkedin
 exports.authenticateLinkedinCallback = (req, res, next) => {
   passport.authenticate('linkedin', function(err, user) {
-    loginWithIdp(err, user, req, res, clientID, 'linkedin');
+    loginWithIdp(err, user, req, res, 'client-id', 'linkedin');
   })(req, res, next);
 };
